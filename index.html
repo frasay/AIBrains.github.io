@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI Brains: LLM Prompting Guide</title>
+<meta content="AI Brains: LLM Prompting Guide" property="og:title"/>
+<meta content="Learn to prompt major AI LLMs from beginner to expert with copyable examples." property="og:description"/>
+<meta content="assets/img_200x200_a74711c1.png" property="og:image"/>
+<meta content="website" property="og:type"/>
+<link href="assets/img_32x32_926899e3.png" rel="icon"/>
+<script src="assets/script_92666476.js"></script>
+<link href="assets/style_87d63d86.css" rel="stylesheet"/>
+<!-- PapaParse is not needed as we are not saving CSV data -->
+<link href="assets/style_08746d93.css" rel="stylesheet"/>
+<script crossorigin="" src="assets/script_45391ed9.js"></script>
+<style>
+           @font-face {
+               font-family: 'ComicFont';
+               src: url('https://fonts.gstatic.com/s/bangers/v20/FeVQS0BTqb0h60ACH5FQ2J5hm25mww.woff2') format('woff2');
+               font-weight: normal;
+               font-style: normal;
+               font-display: swap;
+           }
+        
+           @font-face {
+               font-family: 'Font Awesome 6 Free';
+               font-path: '/chat/webfonts/fa-regular-400';
+               src: url('/chat/webfonts/fa-regular-400.woff2') format('woff2'),
+                   url('/chat/webfonts/fa-regular-400.ttf') format('truetype');
+           }
+
+           @font-face {
+               font-family: 'Font Awesome 6 Free';
+               font-path: '/chat/webfonts/fa-solid-900';
+               src: url('/chat/webfonts/fa-solid-900.woff2') format('woff2'),
+                   url('/chat/webfonts/fa-solid-900.ttf') format('truetype');
+           }
+
+           @font-face {
+               font-family: 'Font Awesome 6 Brands';
+               font-path: '/chat/webfonts/fa-brands-400';
+               src: url('/chat/webfonts/fa-brands-400.woff2') format('woff2'),
+                   url('/chat/webfonts/fa-brands-400.ttf') format('truetype');
+           }
+        
+           body {
+               font-family: 'ComicFont', sans-serif;
+               background-color: #fffdf7;
+               background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23e0dfd0' fill-opacity='0.2' fill-rule='evenodd'/%3E%3C/svg%3E");
+           }
+        
+           .comic-border {
+               border: 3px solid black;
+               box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.8);
+               position: relative;
+           }
+        
+           .comic-border::before {
+               content: "";
+               position: absolute;
+               top: -8px;
+               left: -8px;
+               right: -8px;
+               bottom: -8px;
+               border: 2px dashed #333;
+               z-index: -1;
+           }
+                
+           .btn-comic {
+               background-color: #ffd700;
+               border: 3px solid black;
+               box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.8);
+               transition: all 0.2s ease;
+               transform: scale(1);
+               font-weight: bold;
+               color: black; 
+           }
+        
+           .btn-comic:hover {
+               transform: scale(1.05);
+               box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.8);
+           }
+        
+           .btn-comic:active {
+               transform: scale(0.98);
+               box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.8);
+           }
+           .btn-comic:disabled {
+               background-color: #f0e68c; 
+               box-shadow: 1px 1px 0px rgba(0,0,0,0.4);
+               cursor: not-allowed;
+           }
+
+           .prompt-card {
+               background-color: #fff; 
+           }
+
+           .prompt-example {
+               border: 2px dashed #8a8a8a;
+               background-color: #fdf5e6; 
+           }
+
+           /* Custom scrollbar */
+           ::-webkit-scrollbar {
+               width: 12px;
+           }
+        
+           ::-webkit-scrollbar-track {
+               background: #f1f1f1;
+               border: 1px solid #888;
+           }
+        
+           ::-webkit-scrollbar-thumb {
+               background: repeating-linear-gradient(
+                   45deg,
+                   #888,
+                   #888 10px,
+                   #666 10px,
+                   #666 20px
+               );
+               border: 2px solid black;
+           }
+       </style>
+<script>
+            window.load_data_from_csv = (filename) => {
+                // Implementation needed when code is downloaded
+            };
+
+            window.save_data_to_csv = (filename, data) => {
+                // Implementation needed when code is downloaded
+            };
+
+            window.call_llm = (system_prompt, user_messages, json_fields) => {
+                // Implementation needed when code is downloaded
+            };
+        </script></head>
+<body class="min-h-screen">
+<header class="bg-yellow-400 border-b-4 border-black p-4 sticky top-0 z-50">
+<div class="container mx-auto flex justify-center items-center">
+<div class="flex items-center">
+<img alt="AI Brains Logo" class="mr-3" src="assets/img_60x60_a74711c1.png"/>
+<h1 class="text-3xl md:text-4xl font-bold">AI Brains</h1>
+</div>
+</div>
+</header>
+<main class="container mx-auto p-4 pb-12">
+<h1 class="text-4xl font-bold text-center my-8 animate__animated animate__rubberBand">LLM Prompting Guide</h1>
+<p class="text-xl text-center mb-12 max-w-3xl mx-auto">Your one-stop shop for mastering prompts! Learn the strengths of popular LLMs and grab example prompts to try out yourself. KAPOW!</p>
+<div class="space-y-12" id="llm-cards-container">
+<!-- LLM Cards will be injected here by JavaScript -->
+</div>
+</main>
+<footer class="bg-yellow-400 border-t-4 border-black p-6 mt-12">
+<div class="container mx-auto text-center">
+<div class="flex justify-center items-center mb-2">
+<img alt="AI Brains Logo" class="mr-2" src="assets/img_30x30_034b7050.png"/>
+<h2 class="text-xl font-bold">AI Brains</h2>
+</div>
+<p>© 2023 AI Brains. Keep on promptin'!</p>
+</div>
+</footer>
+<script>
+           const llmData = [
+               {
+                   name: "GPT-4 (OpenAI)",
+                   icon: "https://cdn.simulationtheory.ai/gasset/?asset=img&prompt=comic book style icon for GPT-4 AI, Robert Crumb aesthetic&w=48&h=48&transparent=true",
+                   advantages: [
+                       "Strong reasoning and complex instruction following.",
+                       "Excellent for creative text generation and diverse writing styles.",
+                       "Proficient in code generation and explanation across multiple languages.",
+                       "Broad general knowledge base.",
+                       "Good at summarization and data extraction."
+                   ],
+                   prompts: [
+                       { level: "Beginner: Simple Question", text: "What are three fun facts about the planet Mars?" },
+                       { level: "Beginner: Basic Command", text: "Translate 'Good morning, sunshine!' into French." },
+                       { level: "Intermediate: Role Play", text: "Explain the concept of black holes as if I were a curious 12-year-old." },
+                       { level: "Intermediate: Creative Writing", text: "Write a short, rhyming poem about a mischievous squirrel who loves to steal garden gnomes. Make it humorous." },
+                       { level: "Intermediate: List Generation", text: "Create a packing list for a 3-day beach vacation. Categorize items (clothing, toiletries, essentials)." },
+                       { level: "Advanced: Scenario Planning", text: "Act as a city planner. Outline a strategy to reduce traffic congestion in a major city, considering public transport, cycling infrastructure, and smart traffic management. Provide 3 key initiatives." },
+                       { level: "Advanced: Code Generation & Explanation", text: "Generate Python code for a function that takes a list of numbers and returns the second largest number. Explain how the code works." },
+                       { level: "Expert: Socratic Tutor", text: "You are a Socratic tutor. Help me understand the pros and cons of universal basic income. Start by asking me a question to gauge my current understanding." },
+                       { level: "Expert: Complex Document Drafting", text: "Draft a proposal for a community garden project. Include sections for: Mission, Goals, Budget Outline, Potential Locations, and Community Benefits. The tone should be persuasive and optimistic." },
+                       { level: "Expert: System + User Prompt (for user to try)", text: "System: You are a world-renowned historian specializing in ancient civilizations. User: Describe the daily life of an average citizen in Rome during the reign of Emperor Augustus. Focus on social structure, work, and leisure." }
+                   ]
+               },
+               {
+                   name: "Claude (Anthropic)",
+                   icon: "https://cdn.simulationtheory.ai/gasset/?asset=img&prompt=comic book style icon for Claude AI, Robert Crumb aesthetic&w=48&h=48&transparent=true",
+                   advantages: [
+                       "Emphasis on safety and producing helpful, harmless responses.",
+                       "Excels at handling long contexts (e.g., summarizing large documents).",
+                       "Strong in nuanced understanding and thoughtful, conversational replies.",
+                       "Good for creative writing, coding, and detailed analysis.",
+                       "Often preferred for tasks requiring ethical considerations."
+                   ],
+                   prompts: [
+                       { level: "Beginner: Basic Info", text: "What is Claude AI known for?" },
+                       { level: "Beginner: Summarization", text: "Summarize the following paragraph in one sentence: [User pastes a short paragraph here]" },
+                       { level: "Intermediate: Brainstorming", text: "Help me brainstorm ideas for a team-building activity for a remote team of 10 people." },
+                       { level: "Intermediate: Dialogue Writing", text: "Write a short, funny dialogue between a smartphone and a landline telephone complaining about their lives." },
+                       { level: "Intermediate: Advice Seeking", text: "I'm trying to learn a new language. Can you give me 5 practical tips for staying motivated?" },
+                       { level: "Advanced: Long-Context Q&A", text: "Imagine I've provided you with a 100-page research paper on renewable energy. Based on that (hypothetical) paper, what are the three most promising technologies for the next decade?" },
+                       { level: "Advanced: Argument Development", text: "Act as a policy advisor. I need to argue against a proposed ban on plastic straws. Help me develop three strong arguments focusing on economic impact and practical alternatives." },
+                       { level: "Expert: Ethical Dilemma Analysis", text: "You are an ethics consultant. Analyze the ethical dilemma of using AI in hiring processes. Discuss potential biases, benefits, and recommendations for fair implementation." },
+                       { level: "Expert: Complex Email Drafting", text: "Draft a polite but firm email to a client who has repeatedly missed payment deadlines. Request immediate payment and outline consequences for further delays, while maintaining a professional tone." },
+                       { level: "Expert: System + User Prompt (for user to try)", text: "System: You are a helpful and harmless AI assistant focused on clarity and detailed explanations. User: Explain the process of gene editing using CRISPR-Cas9, including its potential benefits and ethical concerns, in a way that a high school biology student can understand." }
+                   ]
+               },
+               {
+                   name: "Gemini (Google)",
+                   icon: "https://cdn.simulationtheory.ai/gasset/?asset=img&prompt=comic book style icon for Gemini AI, Robert Crumb aesthetic&w=48&h=48&transparent=true",
+                   advantages: [
+                       "Strong multimodal capabilities (text, code, and planned image/video understanding).",
+                       "Advanced reasoning and problem-solving skills.",
+                       "Good for complex tasks requiring synthesis of information.",
+                       "Integrates with the Google ecosystem for up-to-date information.",
+                       "Often performs well in coding and logical reasoning benchmarks."
+                   ],
+                   prompts: [
+                       { level: "Beginner: Feature Inquiry", text: "What are some key features of Google's Gemini AI?" },
+                       { level: "Beginner: Simple Recipe", text: "Give me a simple recipe for scrambled eggs." },
+                       { level: "Intermediate: Image Description (conceptual)", text: "If I showed you an image of a cat chasing a laser pointer, what details would you focus on to describe the scene?" },
+                       { level: "Intermediate: Code Snippet", text: "Write a JavaScript function to check if a string is a palindrome." },
+                       { level: "Intermediate: Comparison", text: "Compare and contrast learning to play a musical instrument versus learning a new programming language. List 3 similarities and 3 differences." },
+                       { level: "Advanced: Startup Idea Generation", text: "I want to start an online business related to sustainable fashion. Generate 3 unique business ideas, each with a target audience and a key selling proposition." },
+                       { level: "Advanced: Analogy Explanation", text: "Explain the concept of blockchain technology using an analogy related to a public library." },
+                       { level: "Expert: Data Analysis Outline", text: "You are a data analyst. I have a dataset of customer reviews for a product. Outline the steps you would take to perform sentiment analysis and identify key themes in the feedback. What metrics would you track?" },
+                       { level: "Expert: Multimodal Prompt Series (conceptual)", text: "Generate a series of 3 prompts for an image generation AI to create a triptych showing the evolution of a tree through spring, summer, and autumn. Describe the desired style and color palette for each." },
+                       { level: "Expert: System + User Prompt (for user to try)", text: "System: You are a multimodal AI assistant with deep knowledge of science and technology. User: Explain how a GPS (Global Positioning System) works, from satellite signals to the device in my hand. If possible, suggest how I could visually represent this process." }
+                   ]
+               },
+               {
+                   name: "Microsoft Copilot",
+                   icon: "https://cdn.simulationtheory.ai/gasset/?asset=img&prompt=comic book style icon for Microsoft Copilot AI, Robert Crumb aesthetic&w=48&h=48&transparent=true",
+                   advantages: [
+                       "Integrated into Microsoft ecosystem (Windows, Edge, Office 365).",
+                       "Leverages Bing for real-time web search and current information.",
+                       "Good for productivity tasks, summarization, and drafting content.",
+                       "Often includes image generation capabilities (via DALL-E integration).",
+                       "Useful as an everyday assistant for a wide range of queries."
+                   ],
+                   prompts: [
+                       { level: "Beginner: Current Info", text: "What are the top news headlines today?" },
+                       { level: "Beginner: Quick Definition", text: "Define 'artificial intelligence' in simple terms." },
+                       { level: "Intermediate: Email Draft", text: "Draft a short, professional email to my team reminding them about tomorrow's 9 AM meeting." },
+                       { level: "Intermediate: Image Generation", text: "Create an image of a friendly robot reading a book in a cozy library, cartoon style." },
+                       { level: "Intermediate: Itinerary Planning", text: "Suggest a 3-hour walking tour itinerary for someone visiting San Francisco for the first time, focusing on iconic landmarks." },
+                       { level: "Advanced: Presentation Outline", text: "I'm creating a PowerPoint presentation about the importance of cybersecurity for small businesses. Suggest 5 slide titles and 3 key bullet points for each." },
+                       { level: "Advanced: Product Comparison", text: "Compare Microsoft Teams and Slack for team collaboration, focusing on features, integration capabilities, and pricing models. Present the information in a table." },
+                       { level: "Expert: Business Strategy Advice", text: "Act as a marketing consultant. My small bakery wants to increase its online presence. Suggest 3 actionable digital marketing strategies we can implement with a limited budget. For each, specify the Microsoft tools that could help." },
+                       { level: "Expert: Excel Formula Help", text: "I have an Excel sheet with dates in column A and sales figures in column B. What formula can I use in column C to calculate the percentage change in sales from the previous day?" },
+                       { level: "Expert: System + User Prompt (for user to try)", text: "System: You are Microsoft Copilot, a helpful AI assistant skilled in productivity and web-based information retrieval. User: Research and summarize the key benefits and drawbacks of remote work for employees and employers. Provide at least three points for each category, citing recent trends if possible." }
+                   ]
+               }
+           ];
+
+           const cardsContainer = document.getElementById('llm-cards-container');
+
+           llmData.forEach(llm => {
+               const card = document.createElement('div');
+               card.className = 'comic-border prompt-card p-6 rounded-lg shadow-lg animate__animated animate__fadeInUp';
+
+               let promptsHtml = '';
+               llm.prompts.forEach((prompt, index) => {
+                   promptsHtml += `
+                       <div class="prompt-example mb-4 p-4 rounded-md relative">
+                           <p class="text-sm font-bold text-gray-700 mb-1">${index + 1}. ${prompt.level}</p>
+                           <p class="text-lg mb-2 prompt-text-display">${prompt.text.replace(/\[User pastes a short paragraph here\]/g, '<span class="italic text-gray-500">(User pastes a short paragraph here)</span>').replace(/\[(.*?)\]/g, '<span class="italic text-blue-600">[$1]</span>')}</p>
+                           <button class="btn-comic px-3 py-1 text-sm copy-btn absolute top-3 right-3">
+                               <i class="fas fa-copy mr-1"></i> Copy
+                           </button>
+                       </div>
+                   `;
+               });
+
+               card.innerHTML = `
+                   <div class="llm-card-header flex items-center justify-between mb-6 cursor-pointer">
+                       <div class="flex items-center">
+                           <img src="${llm.icon}" alt="${llm.name} Logo" class="w-12 h-12 mr-4 border-2 border-black rounded-full">
+                           <h2 class="text-3xl font-bold">${llm.name}</h2>
+                       </div>
+                       <i class="fas fa-chevron-down text-2xl text-gray-600 transition-transform duration-300"></i>
+                   </div>
+                   <div class="mb-8">
+                       <h3 class="text-xl font-bold mb-3 text-red-600">POW! Key Advantages:</h3>
+                       <ul class="list-disc pl-6 space-y-2 text-lg">
+                           ${llm.advantages.map(adv => `<li>${adv}</li>`).join('')}
+                       </ul>
+                   </div>
+                   <div class="llm-prompts-container hidden mt-6">
+                       <h3 class="text-xl font-bold mb-4 text-blue-700">ZAP! Example Prompts (Beginner to Expert):</h3>
+                       ${promptsHtml}
+                   </div>
+               `;
+               cardsContainer.appendChild(card);
+           });
+
+           document.querySelectorAll('.llm-card-header').forEach(header => {
+               header.addEventListener('click', function() {
+                   const promptsContainer = this.parentElement.querySelector('.llm-prompts-container');
+                   const chevronIcon = this.querySelector('i.fas');
+                   if (promptsContainer) {
+                       promptsContainer.classList.toggle('hidden');
+                       if (promptsContainer.classList.contains('hidden')) {
+                           chevronIcon.classList.remove('fa-chevron-up', 'rotate-180');
+                           chevronIcon.classList.add('fa-chevron-down');
+                       } else {
+                           chevronIcon.classList.remove('fa-chevron-down');
+                           chevronIcon.classList.add('fa-chevron-up', 'rotate-180');
+                       }
+                   }
+               });
+           });
+
+           document.querySelectorAll('.copy-btn').forEach(button => {
+               button.addEventListener('click', function() {
+                   const promptTextElement = this.parentElement.querySelector('.prompt-text-display');
+                   if (promptTextElement) {
+                       let promptText = promptTextElement.innerHTML;
+                       promptText = promptText.replace(/<span class="italic text-gray-500">\(User pastes a short paragraph here\)<\/span>/g, '[User pastes a short paragraph here]');
+                       promptText = promptText.replace(/<span class="italic text-blue-600">\[(.*?)\]<\/span>/g, '[$1]');
+                    
+                       const tempDiv = document.createElement('div');
+                       tempDiv.innerHTML = promptText;
+                       promptText = tempDiv.textContent || tempDiv.innerText || "";
+
+                       navigator.clipboard.writeText(promptText).then(() => {
+                           const originalText = this.innerHTML;
+                           this.innerHTML = '<i class="fas fa-check mr-1"></i> Copied!';
+                           this.disabled = true;
+                           setTimeout(() => {
+                               this.innerHTML = originalText;
+                               this.disabled = false;
+                           }, 2000);
+                       }).catch(err => {
+                           console.error('Failed to copy: ', err);
+                           alert('Failed to copy text. Your browser might not support this feature or requires permissions.');
+                       });
+                   } else {
+                       console.error('Prompt text element not found for this button.');
+                   }
+               });
+           });
+       </script>
+</body>
+</html>
